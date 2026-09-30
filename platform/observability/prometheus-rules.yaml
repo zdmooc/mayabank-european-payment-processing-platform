@@ -1,0 +1,17 @@
+groups:
+  - name: payment-processing
+    rules:
+      - alert: PaymentProcessingHighUnknownRate
+        expr: rate(card_authorization_unknown_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Authorization UNKNOWN rate above lab threshold
+      - alert: PaymentProcessingReconciliationBacklog
+        expr: card_reconciliation_open_cases > 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Reconciliation backlog above lab threshold
