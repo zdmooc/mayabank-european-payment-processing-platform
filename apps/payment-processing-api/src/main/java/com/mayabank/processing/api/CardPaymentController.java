@@ -27,17 +27,17 @@ public class CardPaymentController {
   }
 
   @PostMapping("/{paymentId}/capture")
-  public PaymentFlowFacade.FlowState capture(@PathVariable UUID paymentId,@RequestBody CaptureRequest r){ return flow.capture(paymentId,r.amount(),r.idempotencyKey()); }
+  public PaymentFlowFacade.FlowState capture(@PathVariable("paymentId") UUID paymentId,@RequestBody CaptureRequest r){ return flow.capture(paymentId,r.amount(),r.idempotencyKey()); }
 
   @PostMapping("/{paymentId}/clear")
-  public PaymentFlowFacade.FlowState clear(@PathVariable UUID paymentId,@RequestBody ClearRequest r){ return flow.clear(paymentId,r.scenario()==null?ClearingService.Scenario.SUCCESS:r.scenario()); }
+  public PaymentFlowFacade.FlowState clear(@PathVariable("paymentId") UUID paymentId,@RequestBody ClearRequest r){ return flow.clear(paymentId,r.scenario()==null?ClearingService.Scenario.SUCCESS:r.scenario()); }
 
   @PostMapping("/{paymentId}/settle")
-  public PaymentFlowFacade.FlowState settle(@PathVariable UUID paymentId,@RequestBody SettleRequest r){ return flow.settle(paymentId,r.scenario()==null?SettlementService.Scenario.SUCCESS:r.scenario()); }
+  public PaymentFlowFacade.FlowState settle(@PathVariable("paymentId") UUID paymentId,@RequestBody SettleRequest r){ return flow.settle(paymentId,r.scenario()==null?SettlementService.Scenario.SUCCESS:r.scenario()); }
 
   @PostMapping("/{paymentId}/reconcile-authorization")
-  public ReconciliationResult reconcileAuthorization(@PathVariable UUID paymentId){ return flow.reconcileAuthorization(paymentId); }
+  public ReconciliationResult reconcileAuthorization(@PathVariable("paymentId") UUID paymentId){ return flow.reconcileAuthorization(paymentId); }
 
   @GetMapping("/{paymentId}")
-  public PaymentFlowFacade.FlowState get(@PathVariable UUID paymentId){ return flow.get(paymentId); }
+  public PaymentFlowFacade.FlowState get(@PathVariable("paymentId") UUID paymentId){ return flow.get(paymentId); }
 }
