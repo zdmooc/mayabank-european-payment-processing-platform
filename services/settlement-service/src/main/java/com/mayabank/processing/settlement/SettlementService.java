@@ -27,5 +27,18 @@ public final class SettlementService {
     });
   }
 
+  public SettlementResult reconcileUnknown(UUID clearingId, SettlementState externalState){
+    var current=byClearing.get(clearingId);
+    if(current==null) throw new IllegalArgumentException("SETTLEMENT_NOT_FOUND");
+    if(current.state()!=SettlementState.SETTLEMENT_UNKNOWN) return current;
+    if(externalState!=SettlementState.SETTLED && externalState!=SettlementState.SETTLEMENT_FAILED) return current;
+    var reconciled=new SettlementResult(current.settlementId(),current.clearingId(),current.paymentId(),externalState,current.amount(),current.currency(),"RECONCILED_"+externalState);
+    byClearing.put(clearingId,reconciled);
+    if(externalState==SettlementState.SETTLED){
+      ledger.postSettlement(current.paymentId(),current.settlementId(),current.amount(),current.currency());
+    }
+    return reconciled;
+  }
+
   public SettlementResult inquireByClearing(UUID clearingId){ return byClearing.get(clearingId); }
 }
