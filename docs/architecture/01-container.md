@@ -6,6 +6,10 @@
 Merchant / POS
     |
     v
+API Management boundary
+(Gravitee from I12/I14)
+    |
+    v
 Acquiring API
     |
     v
@@ -42,14 +46,28 @@ Authorization Engine
 
 ## Cross-cutting containers
 
+### Core
+
+- Java / Spring Boot
+- Payment Platform SDK
 - PostgreSQL
 - Kafka
-- Keycloak/OIDC
 - OpenTelemetry
 - Prometheus/Grafana
 - Argo CD / GitOps
 - Kubernetes/Kind
 - OpenShift-compatible packaging
+
+### Deferred
+
+- Keycloak/OIDC
+- Gravitee API Management
+
+### Enterprise projection / compatibility
+
+- Axway MFT boundary
+- GitLab CI/CD portability
+- IBM Cloud target mapping
 
 ## State separation
 
