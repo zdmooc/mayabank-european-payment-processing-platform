@@ -123,20 +123,41 @@ one merchant intent
 
 ## Technology direction
 
-Initial reference stack:
+The public Estreem Solution Architect posting names **Java, Gravitee, Kafka, PostgreSQL, Keycloak, Axway, GitLab and OpenShift**, and also emphasizes an internal Java SDK, IBM Cloud, distributed systems, API/integration, security-by-design and strong NFR culture.
+
+The POC keeps these signals selectively.
+
+### Core runtime
 
 - Java / Spring Boot
 - PostgreSQL
 - Kafka
-- OpenAPI / AsyncAPI
-- OAuth2/OIDC / Keycloak
+- OpenShift-compatible packaging
+- Kubernetes / Kind for local multi-cluster experiments
+- Argo CD / GitOps
 - OpenTelemetry
 - Prometheus / Grafana
-- GitOps / Argo CD
-- Kubernetes / Kind for local multi-cluster experiments
-- OpenShift-compatible packaging for enterprise projection
+
+### Deferred runtime
+
+- Keycloak — I12
+- Gravitee — I12/I14
+- internal Java **Payment Platform SDK** — starts I01/I02 and evolves throughout the program
+
+### Projection / compatibility only
+
+- GitLab — CI/CD compatibility; executable CI remains GitHub Actions
+- Axway MFT — generic MFT/SFTP boundary for clearing/settlement scenarios
+- IBM Cloud — enterprise cloud target architecture, not required for local runtime
+
+Principle: **architecture fidelity > product-logo fidelity**.
 
 No technology is considered runtime-proven until evidence is committed.
+
+See:
+- `docs/architecture/03-technology-baseline.md`
+- `docs/architecture/04-java-platform-sdk.md`
+- `docs/sources/ESTREEM_SOLUTION_ARCHITECT_TECH_SIGNAL_2026-09-28.md`
 
 ## Reuse strategy
 
@@ -176,9 +197,9 @@ The Cards domain itself is new and must not be copied from Wero/SCT Inst runtime
 | Iteration | Scope |
 |---|---|
 | I00 | Repository foundation, truth model, C4, ADRs, DoD |
-| I01 | Card domain model |
-| I02 | Authorization vertical slice |
-| I03 | Synthetic CB/Visa/Mastercard simulators |
+| I01 | Card domain model + Platform SDK contract baseline |
+| I02 | Authorization vertical slice using SDK conventions |
+| I03 | Synthetic CB/Visa/Mastercard simulators + SDK v1 foundations |
 | I04 | Capture & reversal |
 | I05 | Kafka / Outbox / Inbox |
 | I06 | Ledger |
@@ -187,11 +208,11 @@ The Cards domain itself is new and must not be copied from Wero/SCT Inst runtime
 | I09 | Reconciliation |
 | I10 | Refund / chargeback / dispute |
 | I11 | Fraud / risk |
-| I12 | Security / API |
+| I12 | Security / API + Keycloak + Gravitee integration boundary |
 | I13 | Observability / SRE |
-| I14 | OpenShift / GitOps packaging |
+| I14 | OpenShift / GitOps packaging + CI/CD portability |
 | I15 | Chaos / resilience + local Kind multi-cluster experiments |
-| I16 | Enterprise reference architecture, HA/PRA design, DORA evidence, interview/demo pack |
+| I16 | Enterprise reference architecture, HA/PRA, DORA, IBM Cloud/Axway/GitLab projections, interview/demo pack |
 
 ## Local multi-cluster target
 
