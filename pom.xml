@@ -23,6 +23,7 @@
     <module>services/eventing-service</module>
     <module>services/ledger-service</module>
     <module>services/clearing-service</module>
+    <module>services/settlement-service</module>
     <module>simulators/cb-simulator</module>
     <module>simulators/visa-simulator</module>
     <module>simulators/mastercard-simulator</module>
