@@ -44,3 +44,16 @@ It does **not** prove:
 ## Exit criterion
 
 I00 is complete when the architecture baseline is internally consistent and no runtime claim is made without evidence.
+
+
+## Technology baseline alignment
+
+The repository foundation now also records the public Estreem technology signal and the selective adoption decision:
+
+- Java / Spring Boot, PostgreSQL, Kafka: retained core;
+- Payment Platform SDK Java: strategic platform foundation;
+- Keycloak / Gravitee: deferred runtime;
+- OpenShift-compatible target + Kind local multi-cluster;
+- GitLab / Axway / IBM Cloud: compatibility or architecture projection.
+
+No payment runtime claim is introduced by this documentation update.
