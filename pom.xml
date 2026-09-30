@@ -25,6 +25,7 @@
     <module>services/clearing-service</module>
     <module>services/settlement-service</module>
     <module>services/reconciliation-service</module>
+    <module>services/dispute-service</module>
     <module>simulators/cb-simulator</module>
     <module>simulators/visa-simulator</module>
     <module>simulators/mastercard-simulator</module>

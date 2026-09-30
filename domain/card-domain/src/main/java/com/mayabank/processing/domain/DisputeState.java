@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum DisputeState { OPEN, UNDER_REVIEW, MERCHANT_WON, CARDHOLDER_WON, CLOSED }

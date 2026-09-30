@@ -12,6 +12,10 @@ public final class LedgerService {
     return post("SETTLEMENT","SETTLEMENT:"+settlementId,paymentId,amount,currency,"MERCHANT_PAYABLE","CASH");
   }
 
+  public LedgerMovement postRefund(UUID paymentId,UUID refundId,BigDecimal amount,String currency){
+    return post("REFUND","REFUND:"+refundId,paymentId,amount,currency,"REFUND_RECEIVABLE","MERCHANT_REFUND_PAYABLE");
+  }
+
   private LedgerMovement post(String type,String reference,UUID paymentId,BigDecimal amount,String currency,String debitAccount,String creditAccount){
     if(amount==null || amount.signum()<=0) throw new IllegalArgumentException("amount must be > 0");
     return byReference.computeIfAbsent(reference,ref->{

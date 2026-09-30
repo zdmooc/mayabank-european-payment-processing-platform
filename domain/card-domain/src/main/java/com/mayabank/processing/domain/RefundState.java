@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum RefundState { REFUND_REQUESTED, REFUNDED, REFUND_FAILED }
