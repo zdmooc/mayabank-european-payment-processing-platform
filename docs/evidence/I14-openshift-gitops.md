@@ -1,9 +1,9 @@
 # I14 Evidence — OpenShift / GitOps
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING  
+**Status:** IMPLEMENTED / PLATFORM CI PASS / OPENSHIFT LIVE PENDING  
 **OpenShift runtime:** NOT YET PROVEN
 
-Expected CI evidence:
+Executed CI evidence — Platform CI run `36686040853` **SUCCESS**:
 - region-a Kustomize render;
 - region-b Kustomize render;
 - security-control assertions;

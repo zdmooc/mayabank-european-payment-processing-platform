@@ -1,6 +1,6 @@
 # I04 Evidence — Capture & Reversal
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING  
+**Status:** IMPLEMENTED / JAVA CI PASS / CAPTURE API E2E  
 **Date:** 2026-09-30
 
 ## Assertions
@@ -10,6 +10,11 @@
 - same authorization cannot create a second capture effect;
 - repeated reversal is idempotent;
 - reversal is not modelled as refund.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
+- Capture happy path executed through API E2E run `36686201540` — **SUCCESS**.
 
 ## Claim boundary
 

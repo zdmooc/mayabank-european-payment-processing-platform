@@ -1,6 +1,6 @@
 # I10 Evidence — Refund / Chargeback / Dispute
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING
+**Status:** IMPLEMENTED / JAVA CI PASS
 
 ## Assertions
 
@@ -10,6 +10,10 @@
 - duplicate refund attempts do not double-post ledger;
 - reversal and refund remain distinct;
 - dispute state is independent from payment settlement state.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
 
 ## Boundary
 

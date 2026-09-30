@@ -1,6 +1,6 @@
 # I03 Evidence — Synthetic Scheme Simulators
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING  
+**Status:** IMPLEMENTED / JAVA CI PASS — SYNTHETIC SCHEMES  
 **Date:** 2026-09-30
 
 ## Implemented
@@ -22,6 +22,11 @@ Issuer view   = AUTH_APPROVED
 ```
 
 The caller must not blindly submit a second financial authorization.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
+- All three synthetic schemes are exercised by automated Java tests.
 
 ## Boundary
 

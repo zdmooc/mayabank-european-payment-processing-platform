@@ -1,6 +1,6 @@
 # I11 Evidence — Fraud / Risk
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING
+**Status:** IMPLEMENTED / JAVA CI PASS — SYNTHETIC RULES
 
 ## Assertions
 
@@ -9,6 +9,10 @@
 - high amount triggers review;
 - velocity threshold triggers review;
 - fraud state is separate from issuer authorization state.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
 
 ## Boundary
 

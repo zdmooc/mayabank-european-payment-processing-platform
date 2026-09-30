@@ -1,6 +1,6 @@
 # I08 Evidence — Settlement
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING
+**Status:** IMPLEMENTED / JAVA CI PASS / API E2E RUNTIME_PROVEN
 
 ## Assertions
 
@@ -10,6 +10,12 @@
 - replay does not double-post;
 - SETTLEMENT_UNKNOWN does not create a false settled ledger posting.
 
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
+- `CLEARED -> SETTLED` executed through API E2E run `36686201540` — **SUCCESS**.
+- PostgreSQL selected integrity constraints: run `36685669720` — **SUCCESS**.
+
 ## Boundary
 
-The service is an in-memory lab model. External settlement network and PostgreSQL durability are not yet runtime-proven.
+External settlement networks and production PostgreSQL durability/HA are not claimed.

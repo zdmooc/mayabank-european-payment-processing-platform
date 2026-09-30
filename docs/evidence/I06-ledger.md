@@ -1,7 +1,7 @@
 # I06 Evidence — Ledger
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING  
-**Persistence:** in-memory logic only at this stage
+**Status:** IMPLEMENTED / JAVA CI PASS / POSTGRESQL CONSTRAINTS RUNTIME_PROVEN  
+**Persistence evidence:** PostgreSQL 16 schema constraints run `36685669720` — SUCCESS
 
 ## Assertions
 
@@ -13,4 +13,4 @@
 
 ## Boundary
 
-This does not claim accounting completeness, production ledger semantics or PostgreSQL durability yet.
+This proves ledger logic plus selected PostgreSQL uniqueness/integrity constraints. It does not claim accounting completeness, production ledger semantics, PostgreSQL HA, backup/PITR or cross-region durability.

@@ -1,6 +1,6 @@
 # I07 Evidence — Clearing
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING
+**Status:** IMPLEMENTED / JAVA CI PASS / API E2E RUNTIME_PROVEN
 
 ## Assertions
 
@@ -9,6 +9,11 @@
 - success produces CLEARED;
 - failure produces CLEARING_EXCEPTION;
 - clearing state remains distinct from settlement state.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
+- `CAPTURED -> CLEARED` executed through API E2E run `36686201540` — **SUCCESS**.
 
 ## Boundary
 

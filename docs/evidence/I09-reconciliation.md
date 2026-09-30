@@ -1,6 +1,6 @@
 # I09 Evidence — Reconciliation
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING
+**Status:** IMPLEMENTED / JAVA CI PASS / UNKNOWN RECONCILIATION RUNTIME_PROVEN
 
 ## Assertions
 
@@ -20,6 +20,11 @@ scheme processed authorization
 -> reconciliation resolves
 -> no second authorization
 ```
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
+- `TIMEOUT_AFTER_EFFECT -> AUTH_UNKNOWN -> AUTH_APPROVED by issuer inquiry` executed through API E2E run `36686201540` — **SUCCESS**.
 
 ## Boundary
 

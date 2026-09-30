@@ -1,6 +1,6 @@
 # I12 Evidence — Security / API
 
-**Status:** IMPLEMENTED / STATIC_CONFIGURED / CI_VALIDATION_PENDING  
+**Status:** IMPLEMENTED / JAVA CI PASS / API RUNTIME_PROVEN / IAM-GATEWAY LIVE PENDING  
 **Keycloak runtime:** NOT YET PROVEN  
 **Gravitee runtime:** NOT YET PROVEN
 
@@ -13,6 +13,12 @@
 - Keycloak realm reference configuration;
 - Gravitee integration boundary;
 - OpenAPI contract.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
+- Spring Boot API E2E: run `36686201540` — **SUCCESS**.
+- OAuth2/Keycloak/Gravitee assets are configured but were not exercised live.
 
 ## Claim boundary
 

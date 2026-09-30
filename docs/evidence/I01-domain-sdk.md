@@ -1,6 +1,6 @@
 # I01 Evidence — Card Domain Model + Platform SDK Baseline
 
-**Status:** IMPLEMENTED / CI_VALIDATION_PENDING  
+**Status:** IMPLEMENTED / JAVA CI PASS  
 **Date:** 2026-09-30
 
 ## Implemented
@@ -28,6 +28,10 @@
 - payment amount must be positive;
 - capture lifecycle is independent from authorization lifecycle;
 - Wero/SCT Inst domain is not imported into the card model.
+
+## Executed evidence
+
+- Java Domain CI: run `36686041016` — **SUCCESS**.
 
 ## Claim boundary
 
