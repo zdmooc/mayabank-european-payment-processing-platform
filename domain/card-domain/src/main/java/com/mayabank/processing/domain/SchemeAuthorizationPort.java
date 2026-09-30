@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public interface SchemeAuthorizationPort { Scheme scheme(); AuthorizationResult authorize(AuthorizationRequest request,SchemeScenario scenario); }

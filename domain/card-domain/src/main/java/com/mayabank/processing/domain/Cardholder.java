@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public record Cardholder(String cardholderId,SyntheticCardToken cardToken) {}

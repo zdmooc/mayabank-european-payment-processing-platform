@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum SettlementState { SETTLEMENT_PENDING, SETTLED, SETTLEMENT_FAILED, SETTLEMENT_UNKNOWN, RECONCILED }

@@ -1,0 +1,2 @@
+package com.mayabank.processing.domain; import java.util.UUID;
+public record AuthorizationResult(UUID authorizationId,AuthorizationState state,String schemeReference,String issuerReference,String reason) {}

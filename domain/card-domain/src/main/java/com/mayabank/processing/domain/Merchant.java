@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public record Merchant(String merchantId,String acquirerId) {}

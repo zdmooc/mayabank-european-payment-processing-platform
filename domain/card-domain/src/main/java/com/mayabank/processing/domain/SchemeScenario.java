@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum SchemeScenario { SUCCESS, DECLINE, TIMEOUT_BEFORE_EFFECT, TIMEOUT_AFTER_EFFECT, UNAVAILABLE }

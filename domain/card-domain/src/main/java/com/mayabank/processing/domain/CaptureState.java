@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum CaptureState { CAPTURE_PENDING, CAPTURED, CAPTURE_FAILED, CAPTURE_UNKNOWN, REVERSED }

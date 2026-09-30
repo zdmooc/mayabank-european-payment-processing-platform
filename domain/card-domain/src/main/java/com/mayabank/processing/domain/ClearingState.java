@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum ClearingState { CLEARING_PENDING, CLEARED, CLEARING_EXCEPTION }

@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum AuthorizationState { AUTH_RECEIVED, AUTH_VALIDATED, AUTH_APPROVED, AUTH_DECLINED, AUTH_UNKNOWN, AUTH_REVERSED }
