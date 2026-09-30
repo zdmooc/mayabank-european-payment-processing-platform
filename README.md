@@ -8,7 +8,7 @@ Independent reference implementation for a modern European **card payment proces
 
 ## Status
 
-**I00 — Repository Foundation: IN PROGRESS**
+**I00 — Repository Foundation: IMPLEMENTED / CI VALIDATION PENDING**
 
 No runtime claim is made at this stage.
 
