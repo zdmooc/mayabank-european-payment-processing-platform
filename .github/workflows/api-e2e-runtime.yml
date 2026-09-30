@@ -34,6 +34,13 @@ jobs:
           docker logs payment-api
           exit 1
 
+      - name: Prometheus endpoint is live
+        run: |
+          curl -fsS http://127.0.0.1:18080/actuator/prometheus > /tmp/prometheus.txt
+          grep -q '^jvm_memory_used_bytes' /tmp/prometheus.txt
+          grep -q 'application="payment-processing-api"' /tmp/prometheus.txt
+          echo "PROMETHEUS_ENDPOINT=PASS"
+
       - name: Happy path authorize capture clear settle
         run: |
           AUTH=$(curl -fsS -X POST http://127.0.0.1:18080/api/v1/card-payments/authorize             -H 'Content-Type: application/json'             -H 'X-Correlation-Id: e2e-happy-1'             -d '{"merchantOrderId":"ORDER-E2E-1","merchantId":"MERCHANT-1","acquirerId":"ACQ-1","token":"tok_e2e_happy","issuerId":"ISS-1","scheme":"VISA","amount":125.50,"currency":"EUR","idempotencyKey":"idem-e2e-1","scenario":"SUCCESS","correlationId":"e2e-happy-1"}')
