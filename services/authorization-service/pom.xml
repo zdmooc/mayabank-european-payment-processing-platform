@@ -1,0 +1,8 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+<parent><groupId>com.mayabank.processing</groupId><artifactId>payment-processing-platform</artifactId><version>0.1.0-SNAPSHOT</version></parent>
+<artifactId>authorization-service</artifactId>
+<dependencies>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>card-domain</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>platform-sdk</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
+</dependencies></project>

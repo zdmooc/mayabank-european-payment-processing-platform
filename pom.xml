@@ -15,6 +15,11 @@
   <modules>
     <module>platform-sdk</module>
     <module>domain/card-domain</module>
+    <module>services/authorization-service</module>
+    <module>services/issuer-service</module>
+    <module>services/scheme-router</module>
+    <module>services/acquiring-service</module>
+    <module>tests/vertical-slice</module>
   </modules>
   <dependencyManagement>
     <dependencies>
