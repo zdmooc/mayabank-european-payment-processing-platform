@@ -8,9 +8,41 @@ Independent reference implementation for a modern European **card payment proces
 
 ## Status
 
-**I00 — Repository Foundation: COMPLETE / CI PASS**
+**I00 → I16: IMPLEMENTED — CORE CI / RUNTIME EVIDENCE PASS**
 
-Foundation guard: **PASS** (GitHub Actions run `36681003713`). No payment runtime claim is made at this stage.
+The repository has reached its complete reference-POC baseline.
+
+Executed evidence:
+
+| Gate | GitHub Actions run | Result |
+|---|---:|---|
+| Payment API E2E + live Prometheus endpoint | `36686201540` | SUCCESS |
+| Kafka single-node runtime | `36685727430` | SUCCESS |
+| PostgreSQL schema/integrity runtime | `36685669720` | SUCCESS |
+| Kind local synthetic multi-cluster resilience | `36685357031` | SUCCESS |
+| Platform container/Kustomize CI | `36686040853` | SUCCESS |
+| Java domain/build/tests | `36686041016` | SUCCESS |
+
+Runtime-proven scope includes:
+- Dockerized Spring Boot payment API;
+- `AUTHORIZE -> CAPTURE -> CLEAR -> SETTLE` happy path;
+- `TIMEOUT_AFTER_EFFECT -> AUTH_UNKNOWN -> issuer inquiry -> AUTH_APPROVED` reconciliation;
+- live application Prometheus metrics endpoint;
+- real single-node Kafka produce/consume;
+- real PostgreSQL uniqueness/integrity constraints;
+- real local three-cluster Kind topology with complete Region A loss and Region B survival/recovery.
+
+Still **not** runtime-proven:
+- live OpenShift deployment;
+- live Keycloak or Gravitee;
+- Prometheus/Grafana/OTel backend stack;
+- Kafka HA/cross-cluster replication;
+- PostgreSQL HA/PITR/cross-region failover;
+- IBM Cloud or Axway runtime;
+- production PCI-DSS/DORA compliance;
+- real CB/Visa/Mastercard network connectivity.
+
+See `docs/evidence/INDEX.md` for the exact claim boundary.
 
 ## Why this project exists
 
@@ -138,11 +170,14 @@ The POC keeps these signals selectively.
 - OpenTelemetry
 - Prometheus / Grafana
 
-### Deferred runtime
+### Strategic platform foundation
 
-- Keycloak — I12
-- Gravitee — I12/I14
-- internal Java **Payment Platform SDK** — starts I01/I02 and evolves throughout the program
+- internal Java **Payment Platform SDK** — implemented from I01 and evolved across the program
+
+### Configured / runtime pending
+
+- Keycloak — security configuration present; live runtime pending
+- Gravitee — API-management boundary present; live runtime pending
 
 ### Projection / compatibility only
 
@@ -194,25 +229,25 @@ The Cards domain itself is new and must not be copied from Wero/SCT Inst runtime
 
 ## Roadmap
 
-| Iteration | Scope |
-|---|---|
-| I00 | Repository foundation, truth model, C4, ADRs, DoD |
-| I01 | Card domain model + Platform SDK contract baseline |
-| I02 | Authorization vertical slice using SDK conventions |
-| I03 | Synthetic CB/Visa/Mastercard simulators + SDK v1 foundations |
-| I04 | Capture & reversal |
-| I05 | Kafka / Outbox / Inbox |
-| I06 | Ledger |
-| I07 | Clearing |
-| I08 | Settlement |
-| I09 | Reconciliation |
-| I10 | Refund / chargeback / dispute |
-| I11 | Fraud / risk |
-| I12 | Security / API + Keycloak + Gravitee integration boundary |
-| I13 | Observability / SRE |
-| I14 | OpenShift / GitOps packaging + CI/CD portability |
-| I15 | Chaos / resilience + local Kind multi-cluster experiments |
-| I16 | Enterprise reference architecture, HA/PRA, DORA, IBM Cloud/Axway/GitLab projections, interview/demo pack |
+| Iteration | Scope | Status |
+|---|---|---|
+| I00 | Repository foundation, truth model, C4, ADRs, DoD | COMPLETE |
+| I01 | Card domain model + Platform SDK | COMPLETE / JAVA CI |
+| I02 | Authorization vertical slice | COMPLETE / API E2E |
+| I03 | Synthetic CB/Visa/Mastercard simulators | COMPLETE / JAVA CI |
+| I04 | Capture & reversal | COMPLETE / JAVA CI |
+| I05 | Kafka / Outbox / Inbox | COMPLETE / KAFKA RUNTIME PROVEN |
+| I06 | Ledger | COMPLETE / POSTGRESQL CONSTRAINTS PROVEN |
+| I07 | Clearing | COMPLETE / API E2E |
+| I08 | Settlement | COMPLETE / API E2E |
+| I09 | Reconciliation | COMPLETE / UNKNOWN RESOLUTION PROVEN |
+| I10 | Refund / chargeback / dispute | COMPLETE / JAVA CI |
+| I11 | Fraud / risk | COMPLETE / JAVA CI |
+| I12 | Security / API | IMPLEMENTED; KEYCLOAK/GRAVITEE LIVE PENDING |
+| I13 | Observability / SRE | APP METRICS PROVEN; BACKENDS PENDING |
+| I14 | OpenShift / GitOps packaging | CONTAINER/KUSTOMIZE CI PROVEN; OPENSHIFT LIVE PENDING |
+| I15 | Kind multi-cluster resilience | RUNTIME_PROVEN — LOCAL SYNTHETIC MULTI_CLUSTER |
+| I16 | Enterprise HLD / HA-PRA / DORA / projections / demo | COMPLETE |
 
 ## Local multi-cluster target
 
