@@ -8,9 +8,9 @@ Independent reference implementation for a modern European **card payment proces
 
 ## Status
 
-**I00 — Repository Foundation: IMPLEMENTED / CI VALIDATION PENDING**
+**I00 — Repository Foundation: COMPLETE / CI PASS**
 
-No runtime claim is made at this stage.
+Foundation guard: **PASS** (GitHub Actions run `36681003713`). No payment runtime claim is made at this stage.
 
 ## Why this project exists
 
