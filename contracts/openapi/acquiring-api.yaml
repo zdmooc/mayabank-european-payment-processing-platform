@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: MayaBank Card Processing API
+  version: 1.0.0
+  description: Synthetic reference API for card processing. Not a proprietary scheme API.
+paths:
+  /api/v1/card-payments/authorize:
+    post:
+      summary: Authorize a synthetic card payment
+      security: [{oauth2: [payments.write]}]
+      responses:
+        '201': {description: Authorization created}
+  /api/v1/card-payments/{paymentId}/capture:
+    post:
+      summary: Capture an approved authorization
+      security: [{oauth2: [payments.write]}]
+      parameters:
+        - in: path
+          name: paymentId
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: Capture state}
+  /api/v1/card-payments/{paymentId}:
+    get:
+      summary: Read payment state
+      security: [{oauth2: [payments.read]}]
+      parameters:
+        - in: path
+          name: paymentId
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: Payment state}
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://keycloak.example/realms/mayabank/protocol/openid-connect/token
+          scopes:
+            payments.read: Read payment state
+            payments.write: Execute payment operations

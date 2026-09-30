@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: payment-processing-api
+server:
+  port: 8080
+---
+spring:
+  config:
+    activate:
+      on-profile: secured
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/mayabank}

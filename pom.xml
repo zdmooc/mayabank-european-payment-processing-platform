@@ -31,6 +31,7 @@
     <module>simulators/visa-simulator</module>
     <module>simulators/mastercard-simulator</module>
     <module>tests/vertical-slice</module>
+    <module>apps/payment-processing-api</module>
   </modules>
   <dependencyManagement>
     <dependencies>

@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+<parent><groupId>com.mayabank.processing</groupId><artifactId>payment-processing-platform</artifactId><version>0.1.0-SNAPSHOT</version><relativePath>../../pom.xml</relativePath></parent>
+<artifactId>payment-processing-api</artifactId>
+<properties><spring-boot.version>3.4.5</spring-boot.version></properties>
+<dependencies>
+ <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId><version>${spring-boot.version}</version></dependency>
+ <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId><version>${spring-boot.version}</version></dependency>
+ <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-oauth2-resource-server</artifactId><version>${spring-boot.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>card-domain</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>authorization-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>issuer-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>scheme-router</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>acquiring-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>capture-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>clearing-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>settlement-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>ledger-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>reconciliation-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>fraud-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>dispute-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>cb-simulator</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>visa-simulator</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>mastercard-simulator</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><version>${spring-boot.version}</version><scope>test</scope></dependency>
+</dependencies>
+<build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId><version>${spring-boot.version}</version></plugin></plugins></build>
+</project>

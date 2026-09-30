@@ -1,0 +1,20 @@
+{
+  "realm": "mayabank",
+  "enabled": true,
+  "roles": {"realm": [{"name":"payment-operator"},{"name":"payment-readonly"}]},
+  "clients": [
+    {
+      "clientId": "payment-processing-api-client",
+      "enabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "secret": "CHANGE_ME_AT_RUNTIME",
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["payments.read","payments.write"]
+    }
+  ],
+  "clientScopes": [
+    {"name":"payments.read","protocol":"openid-connect"},
+    {"name":"payments.write","protocol":"openid-connect"}
+  ]
+}
