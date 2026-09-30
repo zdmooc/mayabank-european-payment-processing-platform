@@ -33,8 +33,7 @@ jobs:
       - name: Produce and consume a synthetic authorization event
         run: |
           EVENT='{"eventId":"40000000-0000-0000-0000-000000000001","eventType":"AUTH_APPROVED","eventVersion":1,"paymentId":"00000000-0000-0000-0000-000000000001","correlationId":"corr-kafka"}'
-          printf '%s
-' "$EVENT" | docker exec -i kafka /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic card.authorization.events.v1
+          echo "$EVENT" | docker exec -i kafka /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic card.authorization.events.v1
           docker exec kafka timeout 20 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic card.authorization.events.v1 --from-beginning --max-messages 1 > /tmp/consumed.txt
           grep -q '"eventType":"AUTH_APPROVED"' /tmp/consumed.txt
           grep -q '"correlationId":"corr-kafka"' /tmp/consumed.txt
