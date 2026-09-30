@@ -1,0 +1,60 @@
+name: I00 Foundation Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Required architecture files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            README.md
+            CHANGELOG.md
+            docs/architecture/00-context.md
+            docs/architecture/01-container.md
+            docs/architecture/02-multicluster-kind-target.md
+            docs/roadmap/I00-I16.md
+            docs/evidence/I00-foundation.md
+            docs/adr/ADR-001-cards-bounded-contexts.md
+            docs/adr/ADR-002-state-plane-separation.md
+            docs/adr/ADR-003-idempotency.md
+            docs/adr/ADR-004-transactional-outbox.md
+            docs/adr/ADR-005-inbox-dedup.md
+            docs/adr/ADR-006-synthetic-schemes.md
+            docs/adr/ADR-007-wero-distinct-rail.md
+            docs/adr/ADR-008-postgresql-initial-store.md
+            docs/adr/ADR-009-kafka-backbone.md
+            docs/adr/ADR-010-openshift-gitops-target.md
+          )
+          for f in "${required[@]}"; do
+            test -f "$f" || { echo "Missing required file: $f"; exit 1; }
+          done
+
+      - name: Truth-boundary assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q "does \*\*not\*\* reproduce Estreem" README.md
+          grep -q "Wero remains a \*\*distinct A2A / SCT Inst rail\*\*" README.md
+          grep -q "LOCAL SYNTHETIC MULTI_CLUSTER" docs/architecture/02-multicluster-kind-target.md
+          grep -q "No runtime claim is made" README.md
+
+      - name: No obvious committed secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE --exclude-dir=.git '(BEGIN (RSA|EC|OPENSSH) PRIVATE KEY|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,})' .; then
+            echo "Potential secret-like material found"
+            exit 1
+          fi
+
+      - name: I00 result
+        run: echo "I00_FOUNDATION_GUARD=PASS"
