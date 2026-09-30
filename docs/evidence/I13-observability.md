@@ -1,6 +1,6 @@
 # I13 Evidence — Observability / SRE
 
-**Status:** IMPLEMENTED / STATIC_CONFIGURED / CI_VALIDATION_PENDING
+**Status:** APPLICATION METRICS RUNTIME_PROVEN / EXTERNAL OBSERVABILITY STACK CONFIGURED
 
 ## Implemented
 
@@ -14,4 +14,13 @@
 
 ## Boundary
 
-No claim is made yet that Prometheus, Grafana or OTel Collector have been deployed against this application. Those require platform runtime evidence.
+Runtime evidence:
+- application Prometheus endpoint executed successfully in GitHub Actions run `36686201540`;
+- JVM metrics and application tag were asserted.
+
+Remaining boundary:
+- Prometheus server deployment: not proven;
+- Grafana runtime/dashboard import: not proven;
+- OpenTelemetry Collector runtime/export: not proven.
+
+Therefore only the application's metrics exposure is `RUNTIME_PROVEN`; the external observability stack remains `CONFIGURED / REFERENCE`.
