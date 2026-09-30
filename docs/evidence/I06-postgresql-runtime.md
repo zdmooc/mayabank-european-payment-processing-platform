@@ -1,6 +1,6 @@
 # I06 Runtime Evidence — PostgreSQL
 
-**Status:** WORKFLOW_IMPLEMENTED / RUNTIME_RESULT_PENDING
+**Status:** RUNTIME_PROVEN — CI POSTGRESQL SCHEMA CONSTRAINTS
 
 Workflow: `PostgreSQL Runtime Evidence`
 
@@ -15,3 +15,18 @@ Successful execution permits:
 `RUNTIME_PROVEN — CI POSTGRESQL SCHEMA CONSTRAINTS`
 
 It does not prove PostgreSQL HA, backup/PITR or cross-region failover.
+
+
+## Executed evidence
+
+- GitHub Actions workflow: `PostgreSQL Runtime Evidence`
+- Run: `36685669720`
+- Result: **SUCCESS**
+- idempotency uniqueness enforced
+- Inbox duplicate rejected
+- financial business reference uniqueness enforced
+- double-entry sample movement balanced
+
+Claim: `RUNTIME_PROVEN — CI POSTGRESQL SCHEMA CONSTRAINTS`.
+
+Boundary unchanged: no HA, PITR or cross-region failover claim.
