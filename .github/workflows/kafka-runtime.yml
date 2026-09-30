@@ -1,0 +1,49 @@
+name: Kafka Runtime Evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'platform/kafka/**'
+      - '.github/workflows/kafka-runtime.yml'
+
+jobs:
+  kafka:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start Apache Kafka single-node KRaft
+        run: |
+          docker run -d --name kafka -p 9092:9092             -e KAFKA_NODE_ID=1             -e KAFKA_PROCESS_ROLES=broker,controller             -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093             -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092             -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER             -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT             -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093             -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1             -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1             -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1             apache/kafka:3.9.1
+          for i in {1..60}; do
+            if docker exec kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1; then exit 0; fi
+            sleep 2
+          done
+          docker logs kafka
+          exit 1
+      - name: Create card lifecycle topics
+        run: |
+          for t in card.authorization.events.v1 card.capture.events.v1 card.clearing.events.v1 card.settlement.events.v1 card.reconciliation.events.v1 card.events.dlq.v1; do
+            docker exec kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --if-not-exists --topic "$t" --partitions 3 --replication-factor 1
+          done
+          docker exec kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list | sort > /tmp/topics.txt
+          grep -q '^card.authorization.events.v1$' /tmp/topics.txt
+          grep -q '^card.settlement.events.v1$' /tmp/topics.txt
+      - name: Produce and consume a synthetic authorization event
+        run: |
+          EVENT='{"eventId":"40000000-0000-0000-0000-000000000001","eventType":"AUTH_APPROVED","eventVersion":1,"paymentId":"00000000-0000-0000-0000-000000000001","correlationId":"corr-kafka"}'
+          printf '%s
+' "$EVENT" | docker exec -i kafka /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic card.authorization.events.v1
+          docker exec kafka timeout 20 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic card.authorization.events.v1 --from-beginning --max-messages 1 > /tmp/consumed.txt
+          grep -q '"eventType":"AUTH_APPROVED"' /tmp/consumed.txt
+          grep -q '"correlationId":"corr-kafka"' /tmp/consumed.txt
+          echo "KAFKA_PRODUCE_CONSUME=PASS"
+      - name: Runtime evidence summary
+        run: |
+          echo "KAFKA_RUNTIME=PASS"
+          echo "CLAIM=RUNTIME_PROVEN_CI_SINGLE_NODE_KAFKA"
+          echo "NOT_PROVEN=broker-HA,cross-cluster-replication,production-retention"
+      - name: Kafka logs on failure
+        if: failure()
+        run: docker logs kafka || true

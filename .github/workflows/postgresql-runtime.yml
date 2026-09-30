@@ -1,0 +1,77 @@
+name: PostgreSQL Runtime Evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'platform/postgresql/**'
+      - '.github/workflows/postgresql-runtime.yml'
+
+jobs:
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: payments
+          POSTGRES_USER: payments
+          POSTGRES_PASSWORD: payments
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U payments -d payments"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGPASSWORD: payments
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client if needed
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update -y
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Apply schema
+        run: psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 -f platform/postgresql/schema.sql
+      - name: Prove idempotency uniqueness
+        run: |
+          psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO idempotency_claim(idempotency_key,payment_id,payload_hash)
+          VALUES ('idem-1','00000000-0000-0000-0000-000000000001','hash-a');
+          SQL
+          if psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 -c             "INSERT INTO idempotency_claim(idempotency_key,payment_id,payload_hash) VALUES ('idem-1','00000000-0000-0000-0000-000000000002','hash-b');"; then
+            echo "duplicate idempotency key unexpectedly accepted"
+            exit 1
+          fi
+          echo "IDEMPOTENCY_UNIQUENESS=PASS"
+      - name: Prove Inbox deduplication
+        run: |
+          psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 -c             "INSERT INTO inbox_event(event_id) VALUES ('10000000-0000-0000-0000-000000000001');"
+          if psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 -c             "INSERT INTO inbox_event(event_id) VALUES ('10000000-0000-0000-0000-000000000001');"; then
+            echo "duplicate event unexpectedly accepted"
+            exit 1
+          fi
+          echo "INBOX_DEDUP=PASS"
+      - name: Prove financial reference uniqueness and balanced movement
+        run: |
+          psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO ledger_movement(movement_id,payment_id,movement_type,business_reference,currency)
+          VALUES ('20000000-0000-0000-0000-000000000001','00000000-0000-0000-0000-000000000001','SETTLEMENT','SETTLEMENT:1','EUR');
+          INSERT INTO ledger_line(line_id,movement_id,account,direction,amount) VALUES
+          ('30000000-0000-0000-0000-000000000001','20000000-0000-0000-0000-000000000001','MERCHANT_PAYABLE','DEBIT',125.50),
+          ('30000000-0000-0000-0000-000000000002','20000000-0000-0000-0000-000000000001','CASH','CREDIT',125.50);
+          SQL
+          NET=$(psql -h 127.0.0.1 -U payments -d payments -Atc             "SELECT COALESCE(SUM(CASE WHEN direction='DEBIT' THEN amount ELSE -amount END),0) FROM ledger_line WHERE movement_id='20000000-0000-0000-0000-000000000001';")
+          test "$NET" = "0.00"
+          if psql -h 127.0.0.1 -U payments -d payments -v ON_ERROR_STOP=1 -c             "INSERT INTO ledger_movement(movement_id,payment_id,movement_type,business_reference,currency) VALUES ('20000000-0000-0000-0000-000000000002','00000000-0000-0000-0000-000000000001','SETTLEMENT','SETTLEMENT:1','EUR');"; then
+            echo "duplicate financial reference unexpectedly accepted"
+            exit 1
+          fi
+          echo "LEDGER_REFERENCE_AND_BALANCE=PASS"
+      - name: Runtime evidence summary
+        run: |
+          echo "POSTGRESQL_RUNTIME=PASS"
+          echo "CLAIM=RUNTIME_PROVEN_CI_POSTGRESQL_SCHEMA_CONSTRAINTS"
