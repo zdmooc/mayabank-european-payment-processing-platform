@@ -355,3 +355,15 @@ Program decision and bootstrap source:
 ## License
 
 This repository is intended for educational, architectural and portfolio demonstration purposes. No proprietary payment network implementation is included.
+
+
+## Interview / Demo Pack
+
+Final portfolio assets:
+
+- `docs/demo/A3_FINAL_ARCHITECTURE.md` — one-page A3 architecture board;
+- `docs/demo/ESTREEM_INTERVIEW_PACK.md` — role mapping, 90-second pitch, likely questions and evidence;
+- `docs/demo/ESTREEM_10_MINUTE_DEMO_SCRIPT.md` — structured interview/demo flow;
+- `docs/demo/FINAL_DEMO.md` — executable demonstration scenarios.
+
+The final portfolio message is evidence-driven: public technology signals are separated from reference architecture and runtime-proven claims.
