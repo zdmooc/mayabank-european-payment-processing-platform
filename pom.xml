@@ -19,6 +19,7 @@
     <module>services/issuer-service</module>
     <module>services/scheme-router</module>
     <module>services/acquiring-service</module>
+    <module>services/capture-service</module>
     <module>simulators/cb-simulator</module>
     <module>simulators/visa-simulator</module>
     <module>simulators/mastercard-simulator</module>
