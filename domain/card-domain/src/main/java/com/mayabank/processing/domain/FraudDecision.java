@@ -1,0 +1,1 @@
+package com.mayabank.processing.domain; public enum FraudDecision { APPROVE, REVIEW, DECLINE }
