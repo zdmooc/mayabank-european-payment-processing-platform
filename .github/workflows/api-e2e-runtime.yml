@@ -1,0 +1,79 @@
+name: Payment API E2E Runtime
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/payment-processing-api/**'
+      - 'services/**'
+      - 'domain/**'
+      - 'simulators/**'
+      - 'platform-sdk/**'
+      - '.github/workflows/api-e2e-runtime.yml'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build API container
+        run: docker build -f apps/payment-processing-api/Dockerfile -t mayabank/payment-processing-api:e2e .
+
+      - name: Start API
+        run: |
+          docker run -d --name payment-api -p 18080:8080 mayabank/payment-processing-api:e2e
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:18080/actuator/health > /tmp/health.json; then
+              grep -q '"status":"UP"' /tmp/health.json
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs payment-api
+          exit 1
+
+      - name: Happy path authorize capture clear settle
+        run: |
+          AUTH=$(curl -fsS -X POST http://127.0.0.1:18080/api/v1/card-payments/authorize             -H 'Content-Type: application/json'             -H 'X-Correlation-Id: e2e-happy-1'             -d '{"merchantOrderId":"ORDER-E2E-1","merchantId":"MERCHANT-1","acquirerId":"ACQ-1","token":"tok_e2e_happy","issuerId":"ISS-1","scheme":"VISA","amount":125.50,"currency":"EUR","idempotencyKey":"idem-e2e-1","scenario":"SUCCESS","correlationId":"e2e-happy-1"}')
+          echo "$AUTH" > /tmp/auth.json
+          test "$(jq -r '.authorization.state' /tmp/auth.json)" = "AUTH_APPROVED"
+          PAYMENT_ID=$(jq -r '.payment.paymentId' /tmp/auth.json)
+
+          curl -fsS -X POST "http://127.0.0.1:18080/api/v1/card-payments/$PAYMENT_ID/capture"             -H 'Content-Type: application/json'             -d '{"amount":125.50,"idempotencyKey":"cap-e2e-1"}' > /tmp/capture.json
+          test "$(jq -r '.capture.state' /tmp/capture.json)" = "CAPTURED"
+
+          curl -fsS -X POST "http://127.0.0.1:18080/api/v1/card-payments/$PAYMENT_ID/clear"             -H 'Content-Type: application/json' -d '{"scenario":"SUCCESS"}' > /tmp/clear.json
+          test "$(jq -r '.clearing.state' /tmp/clear.json)" = "CLEARED"
+
+          curl -fsS -X POST "http://127.0.0.1:18080/api/v1/card-payments/$PAYMENT_ID/settle"             -H 'Content-Type: application/json' -d '{"scenario":"SUCCESS"}' > /tmp/settle.json
+          test "$(jq -r '.settlement.state' /tmp/settle.json)" = "SETTLED"
+
+          curl -fsS "http://127.0.0.1:18080/api/v1/card-payments/$PAYMENT_ID" > /tmp/final.json
+          test "$(jq -r '.settlement.state' /tmp/final.json)" = "SETTLED"
+          echo "HAPPY_PATH=PASS"
+
+      - name: Ambiguous authorization and reconciliation
+        run: |
+          AUTH=$(curl -fsS -X POST http://127.0.0.1:18080/api/v1/card-payments/authorize             -H 'Content-Type: application/json'             -H 'X-Correlation-Id: e2e-unknown-1'             -d '{"merchantOrderId":"ORDER-E2E-UNKNOWN","merchantId":"MERCHANT-1","acquirerId":"ACQ-1","token":"tok_e2e_unknown","issuerId":"ISS-1","scheme":"VISA","amount":42.00,"currency":"EUR","idempotencyKey":"idem-e2e-unknown","scenario":"TIMEOUT_AFTER_EFFECT","correlationId":"e2e-unknown-1"}')
+          echo "$AUTH" > /tmp/unknown.json
+          test "$(jq -r '.authorization.state' /tmp/unknown.json)" = "AUTH_UNKNOWN"
+          PAYMENT_ID=$(jq -r '.payment.paymentId' /tmp/unknown.json)
+
+          curl -fsS -X POST "http://127.0.0.1:18080/api/v1/card-payments/$PAYMENT_ID/reconcile-authorization" > /tmp/reconcile.json
+          test "$(jq -r '.resolved' /tmp/reconcile.json)" = "true"
+          test "$(jq -r '.afterState' /tmp/reconcile.json)" = "AUTH_APPROVED"
+          test "$(jq -r '.action' /tmp/reconcile.json)" = "RESOLVED_FROM_ISSUER_INQUIRY"
+          echo "UNKNOWN_RECONCILIATION=PASS"
+
+      - name: Runtime evidence summary
+        run: |
+          echo "API_E2E_RUNTIME=PASS"
+          echo "HAPPY_PATH=AUTHORIZE_CAPTURE_CLEAR_SETTLE"
+          echo "AMBIGUOUS_PATH=TIMEOUT_AFTER_EFFECT_UNKNOWN_RECONCILED_APPROVED"
+          echo "CLAIM=RUNTIME_PROVEN_CI_PAYMENT_API_E2E"
+
+      - name: Logs on failure
+        if: failure()
+        run: docker logs payment-api || true
