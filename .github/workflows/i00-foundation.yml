@@ -26,6 +26,11 @@ jobs:
             docs/sources/ESTREEM_SOLUTION_ARCHITECT_TECH_SIGNAL_2026-09-28.md
             docs/roadmap/I00-I16.md
             docs/evidence/I00-foundation.md
+            docs/evidence/INDEX.md
+            docs/evidence/I02-I09-api-runtime.md
+            docs/evidence/I05-kafka-runtime.md
+            docs/evidence/I06-postgresql-runtime.md
+            docs/evidence/I15-kind-multicluster.md
             docs/adr/ADR-001-cards-bounded-contexts.md
             docs/adr/ADR-002-state-plane-separation.md
             docs/adr/ADR-003-idempotency.md
@@ -50,8 +55,11 @@ jobs:
           grep -q "does \*\*not\*\* reproduce Estreem" README.md
           grep -q "Wero remains a \*\*distinct A2A / SCT Inst rail\*\*" README.md
           grep -q "LOCAL SYNTHETIC MULTI_CLUSTER" docs/architecture/02-multicluster-kind-target.md
-          grep -q "No payment runtime claim is made" README.md
+          grep -q "does \*\*not\*\* reproduce Estreem" README.md
+          grep -q "Still \*\*not\*\* runtime-proven" README.md
           grep -q "architecture fidelity > product-logo fidelity" README.md
+          grep -q "real CB/Visa/Mastercard network connectivity" README.md
+          grep -q "RUNTIME_PROVEN — CI LOCAL SYNTHETIC MULTI_CLUSTER" docs/evidence/INDEX.md
           grep -q "Payment Platform SDK" docs/architecture/04-java-platform-sdk.md
 
       - name: No obvious committed secrets
