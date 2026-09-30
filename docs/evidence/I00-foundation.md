@@ -1,6 +1,6 @@
 # I00 Evidence — Repository Foundation
 
-**Status:** DESIGNED / IMPLEMENTED  
+**Status:** COMPLETE / CI PASS  
 **Runtime:** NOT APPLICABLE  
 **Date:** 2026-09-30
 
@@ -31,6 +31,15 @@ It does **not** prove:
 - multi-cluster runtime;
 - HA/PRA;
 - PCI-DSS compliance.
+
+## CI evidence
+
+- GitHub Actions workflow: `I00 Foundation Guard`
+- Run: `36681003713`
+- Result: `success`
+- Required files: PASS
+- Truth-boundary assertions: PASS
+- Secret-pattern scan: PASS
 
 ## Exit criterion
 
