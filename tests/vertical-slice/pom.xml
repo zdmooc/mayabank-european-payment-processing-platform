@@ -7,5 +7,9 @@
  <dependency><groupId>com.mayabank.processing</groupId><artifactId>issuer-service</artifactId><version>${project.version}</version></dependency>
  <dependency><groupId>com.mayabank.processing</groupId><artifactId>scheme-router</artifactId><version>${project.version}</version></dependency>
  <dependency><groupId>com.mayabank.processing</groupId><artifactId>acquiring-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>capture-service</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>cb-simulator</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>visa-simulator</artifactId><version>${project.version}</version></dependency>
+ <dependency><groupId>com.mayabank.processing</groupId><artifactId>mastercard-simulator</artifactId><version>${project.version}</version></dependency>
  <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
 </dependencies></project>
