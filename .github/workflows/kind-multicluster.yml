@@ -1,0 +1,101 @@
+name: Kind Multi-Cluster Resilience
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'platform/kind/**'
+      - '.github/workflows/kind-multicluster.yml'
+      - 'apps/payment-processing-api/**'
+
+jobs:
+  multicluster:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kind
+        run: |
+          curl -Lo kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
+          chmod +x kind
+          sudo mv kind /usr/local/bin/kind
+          kind version
+
+      - name: Create management and regional clusters
+        run: |
+          kind create cluster --config platform/kind/mgmt.yaml --wait 120s
+          kind create cluster --config platform/kind/region-a.yaml --wait 120s
+          kind create cluster --config platform/kind/region-b.yaml --wait 120s
+          kubectl config get-contexts
+          test "$(kubectl --context kind-pay-region-a get nodes --no-headers | wc -l)" -eq 1
+          test "$(kubectl --context kind-pay-region-b get nodes --no-headers | wc -l)" -eq 1
+
+      - name: Build reference API image
+        run: docker build -f apps/payment-processing-api/Dockerfile -t mayabank/payment-processing-api:ci .
+
+      - name: Load image into both payment regions
+        run: |
+          kind load docker-image mayabank/payment-processing-api:ci --name pay-region-a
+          kind load docker-image mayabank/payment-processing-api:ci --name pay-region-b
+
+      - name: Deploy region A and B
+        run: |
+          kubectl --context kind-pay-region-a apply -k platform/kind/overlays/region-a
+          kubectl --context kind-pay-region-b apply -k platform/kind/overlays/region-b
+          kubectl --context kind-pay-region-a -n payment-processing rollout status deployment/payment-processing-api --timeout=180s
+          kubectl --context kind-pay-region-b -n payment-processing rollout status deployment/payment-processing-api --timeout=180s
+
+      - name: Region B health before failure
+        run: |
+          kubectl --context kind-pay-region-b -n payment-processing port-forward svc/payment-processing-api 18080:8080 >/tmp/pf-b.log 2>&1 &
+          PF_PID=$!
+          trap 'kill $PF_PID || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:18080/actuator/health >/tmp/health-before.json; then break; fi
+            sleep 2
+          done
+          grep -q '"status":"UP"' /tmp/health-before.json
+
+      - name: Simulate complete Region A loss
+        run: |
+          kind delete cluster --name pay-region-a
+          if kubectl --context kind-pay-region-a get nodes >/dev/null 2>&1; then
+            echo "region-a unexpectedly reachable"
+            exit 1
+          fi
+          echo "REGION_A_LOSS=CONFIRMED"
+
+      - name: Verify Region B survives Region A loss
+        run: |
+          kubectl --context kind-pay-region-b get nodes
+          kubectl --context kind-pay-region-b -n payment-processing rollout status deployment/payment-processing-api --timeout=60s
+          kubectl --context kind-pay-region-b -n payment-processing port-forward svc/payment-processing-api 18081:8080 >/tmp/pf-b2.log 2>&1 &
+          PF_PID=$!
+          trap 'kill $PF_PID || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:18081/actuator/health >/tmp/health-after.json; then break; fi
+            sleep 2
+          done
+          grep -q '"status":"UP"' /tmp/health-after.json
+          echo "REGION_B_SURVIVAL=PASS"
+
+      - name: Pod recovery in surviving region
+        run: |
+          POD=$(kubectl --context kind-pay-region-b -n payment-processing get pod -l app=payment-processing-api -o jsonpath='{.items[0].metadata.name}')
+          kubectl --context kind-pay-region-b -n payment-processing delete pod "$POD"
+          kubectl --context kind-pay-region-b -n payment-processing rollout status deployment/payment-processing-api --timeout=120s
+          echo "REGION_B_POD_RECOVERY=PASS"
+
+      - name: Evidence summary
+        run: |
+          echo "I15_RESULT=PASS"
+          echo "CLAIM=RUNTIME_PROVEN_CI_LOCAL_SYNTHETIC_MULTI_CLUSTER"
+          echo "NOT_PROVEN=multi-AZ,multi-datacenter,production-PRA,independent-failure-domains"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          kind delete cluster --name pay-mgmt || true
+          kind delete cluster --name pay-region-a || true
+          kind delete cluster --name pay-region-b || true
