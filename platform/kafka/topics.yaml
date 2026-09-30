@@ -1,0 +1,25 @@
+topics:
+  - name: card.authorization.events.v1
+    partitions: 3
+    replicationFactor: 1
+    labOnly: true
+  - name: card.capture.events.v1
+    partitions: 3
+    replicationFactor: 1
+    labOnly: true
+  - name: card.clearing.events.v1
+    partitions: 3
+    replicationFactor: 1
+    labOnly: true
+  - name: card.settlement.events.v1
+    partitions: 3
+    replicationFactor: 1
+    labOnly: true
+  - name: card.reconciliation.events.v1
+    partitions: 3
+    replicationFactor: 1
+    labOnly: true
+  - name: card.events.dlq.v1
+    partitions: 1
+    replicationFactor: 1
+    labOnly: true
