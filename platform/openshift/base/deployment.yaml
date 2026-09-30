@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-processing-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-processing-api
+  template:
+    metadata:
+      labels:
+        app: payment-processing-api
+    spec:
+      serviceAccountName: payment-processing-api
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/zdmooc/mayabank-european-payment-processing-platform:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: payment-processing-api
+          resources:
+            requests: {cpu: "100m", memory: "256Mi"}
+            limits: {cpu: "750m", memory: "768Mi"}
+          readinessProbe:
+            httpGet: {path: /actuator/health/readiness, port: 8080}
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet: {path: /actuator/health/liveness, port: 8080}
+            initialDelaySeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: tmp
+          emptyDir: {}

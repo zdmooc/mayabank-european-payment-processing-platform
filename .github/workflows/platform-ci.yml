@@ -1,0 +1,32 @@
+name: Platform CI
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/payment-processing-api/**'
+      - 'platform/openshift/**'
+      - 'gitops/**'
+      - '.github/workflows/platform-ci.yml'
+  pull_request:
+jobs:
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render region A
+        run: kubectl kustomize platform/openshift/overlays/region-a > /tmp/region-a.yaml
+      - name: Render region B
+        run: kubectl kustomize platform/openshift/overlays/region-b > /tmp/region-b.yaml
+      - name: Assert critical controls
+        run: |
+          grep -q "runAsNonRoot: true" /tmp/region-a.yaml
+          grep -q "kind: NetworkPolicy" /tmp/region-a.yaml
+          grep -q "kind: PodDisruptionBudget" /tmp/region-a.yaml
+          grep -q "mayabank.io/region: region-a" /tmp/region-a.yaml
+          grep -q "mayabank.io/region: region-b" /tmp/region-b.yaml
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f apps/payment-processing-api/Dockerfile -t mayabank/payment-processing-api:ci .

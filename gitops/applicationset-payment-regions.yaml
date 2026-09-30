@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: payment-processing-regions
+  namespace: argocd
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            mayabank.io/payment-region: "true"
+  template:
+    metadata:
+      name: 'payment-processing-{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/zdmooc/mayabank-european-payment-processing-platform.git
+        targetRevision: main
+        path: 'platform/openshift/overlays/{{metadata.labels.mayabank.io/region}}'
+      destination:
+        server: '{{server}}'
+        namespace: payment-processing
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
